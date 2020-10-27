@@ -30,12 +30,34 @@ Weeks 7, 8 and 9 are the core of the class. We have a question. We have some dat
 
 * `att_chg` as a function of `gender`
 
+```{r scene 1-1}
+fit_obj_1 <- stan_glm(data = week_8, 
+                      formula = att_chg ~ gender -1, 
+                      refresh = 0)
+
+print(fit_obj_1, detail = FALSE) 
+```
+
 
 * `att_chg` as a function of `liberal`
 
+```{r}
+fit_obj_2 <- stan_glm(data = week_8, 
+                      formula = att_chg ~ liberal -1, 
+                      refresh = 0)
+
+print(fit_obj_2, detail = FALSE) 
+```
 
 * `att_chg` as a function of `treatment`
 
+```{r}
+fit_obj_3 <- stan_glm(data = week_8, 
+                      formula = att_chg ~ treatment -1, 
+                      refresh = 0)
+
+print(fit_obj_3, detail = FALSE, digits = 4) 
+```
 
 
 
@@ -44,6 +66,15 @@ Weeks 7, 8 and 9 are the core of the class. We have a question. We have some dat
 
 **Prompt:** For the model with `att_chg` as a function of `treatment`, create posterior probability densities for the two important parameters. Write a paragraph interpreting the meaning of those posteriors. 
 
+```{r scene 2}
+
+fit_obj_3 %>%
+  as_tibble() %>% 
+  ggplot(aes(x = treatmentControl, 
+             y = after_stat(count/sum(count)))) +
+  geom_histogram(bins = 100)
+
+```
 
 
 
@@ -51,5 +82,13 @@ Weeks 7, 8 and 9 are the core of the class. We have a question. We have some dat
 
 **Prompt:** Create a plot of the the posterior for the average treatment effect. Write a paragraph interpreting the plot.
 
+```{r scene 3}
+fit_obj_3 %>%
+  as_tibble() %>% 
+  mutate(ate = treatmentTreated - treatmentControl) %>% 
+  ggplot(aes(x = ate, 
+             y = after_stat(count/sum(count)))) +
+  geom_histogram(bins = 100)
+```
 
 
